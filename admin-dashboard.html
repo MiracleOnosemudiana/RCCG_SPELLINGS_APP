@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        
+        <button onclick="adminLogout()" class="logout-button">Logout</button>
+
+
+        <!-- Navigation Buttons -->
+        <button onclick="showSection('add-words-section')">Add Spelling Words</button>
+        <button onclick="showSection('view-results-section')">View Results</button>
+
+        <!-- Add Spelling Words Section -->
+        <div id="add-words-section" style="display: none;">
+            <h2>Add Spelling Words</h2>
+            <label for="category-select">Select Category:</label>
+            <select id="category-select" onchange="setAddCategory(this.value)">
+                <option value="">--Choose--</option>
+                <option value="6-8">6-8 Years</option>
+                <option value="9-12">9-12 Years</option>
+                <option value="13-15">13-15 Years</option>
+                <option value="16-19">16-19 Years</option>
+            </select>
+
+            <p>Adding words to category: <span id="current-category">Not selected</span></p>
+            <textarea id="bulk-words" placeholder="Enter words separated by commas"></textarea>
+            <button onclick="addBulkWords()">Add Words</button>
+
+            <p class="hidden" id="word-list-heading">Word List for category: <span id="word-list-current-category">Not selected</span></p>
+            <ul id="word-list"></ul>
+        </div>
+
+        <!-- View Results Section -->
+        <div id="view-results-section" style="display: none;">
+            <h2>All Quiz Results</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Score</th>
+                        <th>Date & Time</th>
+                        <th>Time Used</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-results-table"></tbody>
+            </table>
+            <button onclick="clearAllResults()">Clear All Results</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

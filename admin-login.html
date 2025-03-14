@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Home Button -->
+        <button onclick="location.href='index.html'" class="home-button">Home</button>
+
+        <h2>Admin Login</h2>
+
+        <div class="username-container">
+            <input type="text" id="admin-username" placeholder="Enter Username" autocomplete="off" autocapitalize="off" required>
+        </div>
+        
+        <div class="password-container">
+            <input type="password" id="admin-password" placeholder="Enter Password" required>
+            <span class="toggle-password" onclick="togglePassword()">
+                <span id="lock-icon">🔒</span> <!-- Default: Locked -->
+            </span>
+        </div>
+        <br>
+        <button onclick="adminLogin()">Login</button>
+        <p id="error-message" class="error"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

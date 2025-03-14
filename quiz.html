@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spelling Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Home Button -->
+        <button onclick="location.href='index.html'" class="home-button">Home</button>
+
+        <div id="take-quiz-intro">
+            <h1>Take Quiz</h1>
+            <label for="user-name">Enter Your Name:</label>
+            <input type="text" id="user-name" placeholder="Your Name">
+
+            <label for="quiz-category">Select Category:</label>
+            <select id="quiz-category" onchange="showStartButton()">
+                <option value="">--Choose--</option>
+                <option value="6-8">6-8 Years</option>
+                <option value="9-12">9-12 Years</option>
+                <option value="13-15">13-15 Years</option>
+                <option value="16-19">16-19 Years</option>
+            </select>
+
+            <button id="start-quiz" class="hidden" onclick="startQuiz()">Start Quiz</button>
+        </div>
+
+        <div id="quiz-area" class="hidden">
+            <p>Time Left: <span id="timer">00:00</span></p>
+            <p id="question"></p>
+            <button onclick="pronounceWord()">Listen Again 🔊</button>
+            <input type="text" id="answer" placeholder="Type the word" autocomplete="off" autocorrect="off"
+                spellcheck="false">
+            <button id="prev-btn" class="hidden" onclick="previousQuestion()">Previous</button>
+            <button id="next-btn" onclick="nextQuestion()">Next</button>
+            <button onclick="submitQuiz()">Submit</button>
+        </div>
+
+        <!-- User Result Modal (Fixed) -->
+        <div id="user-result-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close" onclick="closeUserResultModal()">&times;</span>
+                <h2>Quiz Results</h2>
+                <p id="user-result-text"></p>
+                <button onclick="closeUserResultModal()">Close</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
