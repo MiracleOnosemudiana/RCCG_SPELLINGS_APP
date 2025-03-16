@@ -34,7 +34,7 @@ function adminLogin() {
     const username = document.getElementById("admin-username").value;
     const password = document.getElementById("admin-password").value;
 
-    if (username === "admin" && password === "rccg") {
+    if (username === "admin" && password === "rccgquiz") {
         localStorage.setItem("isAdminLoggedIn", "true");
         window.location.href = "admin-dashboard.html";
     } else {
