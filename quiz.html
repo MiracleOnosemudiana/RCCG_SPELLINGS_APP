@@ -17,7 +17,7 @@
             <h1>Take Quiz</h1>
             <label for="user-name">Enter Your Name:</label>
             <input type="text" id="user-name" placeholder="Your Name">
-
+            <br>
             <label for="quiz-category">Select Category:</label>
             <select id="quiz-category" onchange="showStartButton()">
                 <option value="">--Choose--</option>
@@ -34,8 +34,10 @@
             <p>Time Left: <span id="timer">00:00</span></p>
             <p id="question"></p>
             <button onclick="pronounceWord()">Listen Again 🔊</button>
+            
             <input type="text" id="answer" placeholder="Type the word" autocomplete="off" autocorrect="off"
-                spellcheck="false">
+                autocapitalize="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly');">
+
             <button id="prev-btn" class="hidden" onclick="previousQuestion()">Previous</button>
             <button id="next-btn" onclick="nextQuestion()">Next</button>
             <button onclick="submitQuiz()">Submit</button>

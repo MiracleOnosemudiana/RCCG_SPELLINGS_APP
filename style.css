@@ -1,6 +1,10 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
+    margin: 0;
+    padding: 3rem 0 0;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 body::before {
@@ -19,19 +23,13 @@ body::before {
 
 
 .container {
-    width: 50%;
+    width: 70%;
     margin: auto;
-    padding: 20px;
+    padding: 0px;
 }
 
 .hidden {
     display: none;
-}
-
-button {
-    padding: 10px;
-    margin: 10px;
-    cursor: pointer;
 }
 
 .error {
@@ -144,4 +142,40 @@ li {
     right: 20px;
     font-size: 24px;
     cursor: pointer;
+}
+
+/* Table wrapper to enable horizontal scroll */
+.table-container {
+    max-width: 100%;
+    overflow-x: auto; /* Only the table scrolls */
+}
+
+/* Table styles */
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px; /* Ensures the table does not shrink */
+}
+
+.table-container th, 
+.table-container td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+    white-space: nowrap; /* Prevents word wrapping */
+}
+
+/* Buttons */
+button {
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
 }

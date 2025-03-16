@@ -1,22 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <div class="container">
         <h1>Admin Dashboard</h1>
-        
+
         <button onclick="adminLogout()" class="logout-button">Logout</button>
 
 
         <!-- Navigation Buttons -->
         <button onclick="showSection('add-words-section')">Add Spelling Words</button>
         <button onclick="showSection('view-results-section')">View Results</button>
+        <button onclick="showSection('set-timer-section')">Set Quiz Timer</button>
+
+        <!-- Set Quiz Timer Section -->
+        <div id="set-timer-section" style="display: none;">
+            <h2>Set Quiz Timer</h2>
+            <label for="quiz-time">Enter Time (minutes):</label>
+            <input type="number" id="quiz-time" min="1" placeholder="Enter minutes">
+            <button onclick="setQuizTime()">Save Time</button>
+            <p>Current Time: <span id="current-time">Not Set</span></p>
+        </div>
 
         <!-- Add Spelling Words Section -->
         <div id="add-words-section" style="display: none;">
@@ -34,26 +46,37 @@
             <textarea id="bulk-words" placeholder="Enter words separated by commas"></textarea>
             <button onclick="addBulkWords()">Add Words</button>
 
-            <p class="hidden" id="word-list-heading">Word List for category: <span id="word-list-current-category">Not selected</span></p>
-            <ul id="word-list"></ul>
+            <p class="hidden" id="word-list-heading">Word List for category: <span id="word-list-current-category">Not
+                    selected</span></p>
+
+            <!-- <h3>Current Category: <span id="current-category">Not selected</span></h3> -->
+            <button id="clear-all-words" class="hidden" onclick="clearAllWords()">Clear All Words</button>
+
+
+            <ul id="word-list" style="width: 100%;"></ul>
         </div>
 
         <!-- View Results Section -->
         <div id="view-results-section" style="display: none;">
             <h2>All Quiz Results</h2>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Score</th>
-                        <th>Date & Time</th>
-                        <th>Time Used</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="admin-results-table"></tbody>
-            </table>
+
+            <!-- Table Container for Scroll -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Score</th>
+                            <th>Date & Time</th>
+                            <th>Time Used</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-results-table"></tbody>
+                </table>
+            </div>
+
             <button onclick="clearAllResults()">Clear All Results</button>
         </div>
     </div>
@@ -61,4 +84,5 @@
     <script src="script.js"></script>
 
 </body>
+
 </html>

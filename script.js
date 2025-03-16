@@ -24,8 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
 //REGISTER THE SERVICE WORKER
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/service-worker.js")
-    .then(() => console.log("Service Worker Registered"))
-    .catch(err => console.log("Service Worker Registration Failed:", err));
+        .then(() => console.log("Service Worker Registered"))
+        .catch(err => console.log("Service Worker Registration Failed:", err));
 }
 
 
@@ -34,7 +34,7 @@ function adminLogin() {
     const username = document.getElementById("admin-username").value;
     const password = document.getElementById("admin-password").value;
 
-    if (username === "admin" && password === "1234") {
+    if (username === "admin" && password === "rccg") {
         localStorage.setItem("isAdminLoggedIn", "true");
         window.location.href = "admin-dashboard.html";
     } else {
@@ -60,6 +60,7 @@ function togglePassword() {
 function showSection(sectionId) {
     let addWordsSection = document.getElementById("add-words-section");
     let viewResultsSection = document.getElementById("view-results-section");
+    document.getElementById("set-timer-section").style.display = "none";
 
     if (!addWordsSection || !viewResultsSection) {
         console.error("One or more sections are missing in the HTML.");
@@ -91,11 +92,17 @@ function setAddCategory(category) {
 
     document.getElementById("word-list-current-category").innerText = currentCategory || "Not selected";
 
-    if (category !== "" && words[currentCategory].length !== 0) {
-        document.getElementById("word-list-heading").classList.remove("hidden")
+    let wordListHeading = document.getElementById("word-list-heading");
+    let clearAllBtn = document.getElementById("clear-all-words");
+
+    if (category && words[currentCategory].length > 0) {
+        wordListHeading.classList.remove("hidden");
+        clearAllBtn.classList.remove("hidden");
     } else {
-        document.getElementById("word-list-heading").classList.add("hidden")
+        wordListHeading.classList.add("hidden");
+        clearAllBtn.classList.add("hidden");
     }
+
     updateWordList();
 }
 
@@ -126,16 +133,93 @@ function addBulkWords() {
 
 function updateWordList() {
     let listElement = document.getElementById("word-list");
+    let clearAllBtn = document.getElementById("clear-all-words");
+    let wordListHeading = document.getElementById("word-list-heading");
+
     listElement.innerHTML = "";
-    if (currentCategory && words[currentCategory]) {
+
+    if (currentCategory && words[currentCategory].length > 0) {
         words[currentCategory].forEach((word, index) => {
             let li = document.createElement("li");
-            li.textContent = `${index + 1}. ${word}`;
-            li.addEventListener("click", () => editOrRemoveWord(index));
+            li.innerHTML = `${index + 1}. ${word} 
+                <button onclick="editWord(${index})">✏️ Edit</button> 
+                <button onclick="deleteWord(${index})">🗑️ Delete</button>`;
+
             listElement.appendChild(li);
         });
+
+        wordListHeading.classList.remove("hidden");
+        // Show "Clear All Words" button only if words exist
+        clearAllBtn.classList.remove("hidden");
+    } else {
+        // Hide "Clear All Words" button if no words are available
+        wordListHeading.classList.add("hidden");
+        clearAllBtn.classList.add("hidden");
     }
 }
+
+function editWord(index) {
+    let newWord = prompt("Enter the new word:", words[currentCategory][index]);
+    if (newWord) {
+        words[currentCategory][index] = newWord.trim();
+        localStorage.setItem("words", JSON.stringify(words));
+        updateWordList();
+    }
+}
+
+function deleteWord(index) {
+    if (confirm("Are you sure you want to delete this word?")) {
+        words[currentCategory].splice(index, 1);
+        localStorage.setItem("words", JSON.stringify(words));
+        updateWordList();
+    }
+}
+
+function clearAllWords() {
+    if (!currentCategory) {
+        alert("Please select a category first.");
+        return;
+    }
+
+    if (confirm(`Are you sure you want to delete all words in the "${currentCategory}" category?`)) {
+        words[currentCategory] = []; // Clear words in the selected category
+        localStorage.setItem("words", JSON.stringify(words)); // Update local storage
+        updateWordList(); // Refresh the list
+
+        document.getElementById("word-list-heading").classList.add("hidden")
+
+        // Hide the "Clear All Words" button if no words remain
+        document.getElementById("clear-all-words").classList.add("hidden");
+
+        alert("All words have been cleared.");
+    }
+}
+
+
+
+// Function to save quiz time
+function setQuizTime() {
+    let timeInput = document.getElementById("quiz-time").value;
+    if (timeInput > 0) {
+        localStorage.setItem("quizTime", timeInput);
+        document.getElementById("current-time").textContent = timeInput + " min";
+        alert("Quiz time set to " + timeInput + " minutes.");
+    } else {
+        alert("Please enter a valid time.");
+    }
+}
+
+// Function to load saved timer when the page loads
+document.addEventListener("DOMContentLoaded", function () {
+    let savedTime = localStorage.getItem("quizTime");
+    if (savedTime) {
+        let currentTimeElement = document.getElementById("current-time");
+        if (currentTimeElement) {
+            currentTimeElement.textContent = savedTime + " min";
+        }
+    }
+});
+
 
 // Quiz initialization functions
 function showStartButton() {
@@ -143,43 +227,70 @@ function showStartButton() {
 }
 
 function startQuiz() {
+    // Store quiz start time
     quizStartTime = new Date().getTime();
     currentQuestionIndex = 0;
+
+    // Get user details
     userName = document.getElementById("user-name").value.trim();
     if (!userName) return alert("Please enter your name before starting the quiz.");
 
+    // Get selected category
     currentCategory = document.getElementById("quiz-category").value;
     if (!currentCategory) return alert("Please select a category.");
 
+    // Get words for the selected category
     quizWords = words[currentCategory] || [];
     if (quizWords.length === 0) return alert("No questions available in the selected category.");
 
+    // Save user name for session tracking
     localStorage.setItem("currentUser", userName);
+
+    // Hide the intro section, show quiz area
     document.getElementById("take-quiz-intro").style.display = "none";
     document.getElementById("quiz-area").classList.remove("hidden");
 
+    // Start the timer
     startTimer();
+
+    // Load the first question
     updateQuestion();
 }
 
+
 // Timer functions
 function startTimer() {
+    // Clear any existing timer interval
     clearInterval(timerInterval);
+
+    // Get saved time from admin settings (or default to 5 minutes)
+    let savedTime = localStorage.getItem("quizTime");
+    let timeLeft = savedTime ? parseInt(savedTime) * 60 : 300; // Convert minutes to seconds
+
+    // Get the timer display element
+    let timerElement = document.getElementById("timer");
+
+    // Start the countdown
     timerInterval = setInterval(() => {
         let hours = Math.floor(timeLeft / 3600);
-        let minutes = Math.floor(timeLeft / 60);
+        let minutes = Math.floor((timeLeft % 3600) / 60); // Correct minutes calculation
         let seconds = timeLeft % 60;
-        document.getElementById("timer").textContent =
+
+        // Display time in HH:MM:SS format
+        timerElement.textContent = 
             `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        // When time runs out, submit the quiz automatically
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             alert("Time is up! Submitting quiz automatically.");
-            submitQuiz(); // Auto-submit quiz when time runs out
+            submitQuiz();
         } else {
-            timeLeft--;
+            timeLeft--; // Decrease time
         }
     }, 1000);
 }
+
 
 function updateTimerDisplay() {
     let hours = Math.floor(timeLeft / 3600);
